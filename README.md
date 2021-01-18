@@ -28,16 +28,15 @@ Installation - prerequisite
 --------------
 1. Download and install https://twlan.github.io/
 2. Ensure you are able to connect to the MySQL database 
-3. Ensure you are able to access the admin pages
-4. Ensure you are able to 
-5. 
-6. Create your player & AI accounts
+3. Ensure you are able to access the admin pages 127.0.0.1/admin
+4. Ensure you are able to use Superbot 127.0.0.1/superbot/index.php (or equivalent build bot)
+5. Create your player & AI accounts
 
 --------------
 Installation and use of TW LAN attack bot
 --------------
 1. Place TWLANattackbot.php in the htcdocs folder (or the hosting server web folder)
-2. Navigate to the web page
+2. Navigate to the web page 127.0.0.1/TWLANattackbot.php
 3. Change refresh speed as you see fit currently set to 80 seconds (would NOT recommends less than 60
    as you could attempt to send attacks before the preivous one has landed and returned).
-4. Change settings as you see fit
+4. Change settings other settings as you see fit
