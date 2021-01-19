@@ -1,12 +1,31 @@
-<?php
+	<?php
 $page = $_SERVER['PHP_SELF'];
-$sec = "80";//60 is one minute, 60000 just to stop it
+$sec = "85";//60 is one minute, 60000 just to stop it
 ?>
 <html>
     <head>
     <meta http-equiv="refresh" content="<?php echo $sec?>;URL='<?php echo $page?>'">
+	
+	<script>
+		
+	var timeleft = 85;
+	var downloadTimer = setInterval(function(){
+	if(timeleft <= 0){
+		clearInterval(downloadTimer);
+		document.getElementById("countdown").innerHTML = "Finished";
+	} else {
+    document.getElementById("countdown").innerHTML = timeleft + " seconds remaining";
+  }
+  timeleft -= 1;
+}, 1000);
+
+	</script>
     </head>
     <body>
+	
+<div id="countdown"></div>
+<br>
+
 <?php
 
 $dbname = 'lan';
@@ -40,17 +59,17 @@ while ($row = mysql_fetch_array($users, MYSQL_BOTH)) {
 	$points = $row['points'];
 
 	
-	/*
+
 	// THIS removes players that have 0 points
-	if ($points < 1){
+	if ($points < 79){
 		echo 
-		$users = mysql_query("DELETE FROM `users` WHERE points < 1");
-		
+		$deleteuser = mysql_query("DELETE FROM `users` WHERE points < 79 ");
+		$deletevillage = mysql_query("DELETE FROM `villages` WHERE points < 79 ");
 		echo '______________________________________________________<br>';
 		echo '<b><p style="color:red">'.$username.' HAS BEEN DEFEATED</p></b>';
 		echo '______________________________________________________<br>';
 	}
-*/
+
 	
 	
 	$village = mysql_query("SELECT * FROM villages where userid = $id");
@@ -109,22 +128,25 @@ while ($row = mysql_fetch_array($users, MYSQL_BOTH)) {
 
 
 	//Check each player for chance to attack, attack if true ($id > 1 stops player1's account sending attacks)
-	if($randomchance <= $chance AND $troopcount > 300 AND $id > 0 AND $villagepoints > 300){
+	if($randomchance <= $chance AND $troopcount > 300 AND $id > 0 AND $villagepoints > 300 AND empty($rand_enemy)==0){
 		
 		echo '<b><p style="color:red">'.$username.' attacks village ID: '.$rand_enemy.'</p></b>';
 		echo '______________________________________________________<br>';
 		
+		//Random movement time
+		$randomMovementTime = rand(21, 41);
+		
 		//Send the movement - TO DO - need to change the to village to the enemy or target village variable (need to create) 
 		$movement = mysql_query("INSERT INTO  `movements` (  `id` ,  `from_village` ,  `to_village` ,  `units` ,  `type` ,  `start_time` ,  `end_time` ,  `building` ,                                       `from_userid` ,  `to_userid` ,  `to_hidden` ,  `wood` ,  `stone` ,  `iron` ,  `send_from_village` ,  `send_from_user` ,  `send_to_user` ,  `send_to_village` ,  `die` ) 
 VALUES (
-$rand_movementid,  $villageid,  '$rand_enemy',  '$spears;$swords;$axes;$archers;$spy;$lightcav;$mountarch;$heavycav;$ram;$cata;$knight;$nobles',  'attack',  UNIX_TIMESTAMP(NOW()),  UNIX_TIMESTAMP(NOW())+41, NULL ,  '$id',           $rand_enemy,  '0',  '0',  '0',  '0',  $villageid,  '$id',       $rand_enemy,     '$rand_enemy',      '0'
+$rand_movementid,  $villageid,  '$rand_enemy',  '$spears;$swords;$axes;$archers;$spy;$lightcav;$mountarch;$heavycav;$ram;$cata;$knight;$nobles',  'attack',  UNIX_TIMESTAMP(NOW()),  UNIX_TIMESTAMP(NOW())+$randomMovementTime, NULL ,  '$id',           $rand_enemy,  '0',  '0',  '0',  '0',  $villageid,  '$id',       $rand_enemy,     '$rand_enemy',      '0'
 );");
 		
 		
 		//Record the event
 		$event = mysql_query("INSERT INTO  `events` (  `id` ,  `event_time` ,  `event_type` ,  `event_id` ,  `user_id` ,  `villageid` ,  `knot_event` ,  `cid` ,  `can_knot` ,  `is_locked` ) 
 VALUES (
-$rand_eventid,  UNIX_TIMESTAMP(NOW())+41,  'movement',  $rand_movementid,  $id,  $villageid,  '',  '0',  '0',  ''
+$rand_eventid,  UNIX_TIMESTAMP(NOW())+$randomMovementTime,  'movement',  $rand_movementid,  $id,  $villageid,  '',  '0',  '0',  ''
 );
 ");
 
