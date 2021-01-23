@@ -39,4 +39,4 @@ Installation and use of TW LAN attack bot
 2. Navigate to the web page 127.0.0.1/TWLANattackbot.php
 3. Change refresh speed as you see fit currently set to 80 seconds (would NOT recommends less than 60
    as you could attempt to send attacks before the preivous one has landed and returned).
-4. Change settings other settings as you see fit
+4. Change settings as you see fit
