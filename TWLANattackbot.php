@@ -1,6 +1,6 @@
 	<?php
 $page = $_SERVER['PHP_SELF'];
-$sec = "85";//60 is one minute, 60000 just to stop it
+$sec = "600";//60 is one minute
 ?>
 <html>
     <head>
@@ -8,7 +8,7 @@ $sec = "85";//60 is one minute, 60000 just to stop it
 	
 	<script>
 		
-	var timeleft = 85;
+	var timeleft = 600;
 	var downloadTimer = setInterval(function(){
 	if(timeleft <= 0){
 		clearInterval(downloadTimer);
@@ -59,12 +59,10 @@ while ($row = mysql_fetch_array($users, MYSQL_BOTH)) {
 	$points = $row['points'];
 
 	
-
+if ($points < 79){
 	// THIS removes players that have 0 points
-	if ($points < 79){
-		echo 
-		$deleteuser = mysql_query("DELETE FROM `users` WHERE points < 79 ");
-		$deletevillage = mysql_query("DELETE FROM `villages` WHERE points < 79 ");
+		$users = mysql_query("DELETE FROM `users` WHERE points < 79 ");
+		$users = mysql_query("DELETE FROM `villages` WHERE points < 79 ");
 		echo '______________________________________________________<br>';
 		echo '<b><p style="color:red">'.$username.' HAS BEEN DEFEATED</p></b>';
 		echo '______________________________________________________<br>';
@@ -97,24 +95,21 @@ while ($row = mysql_fetch_array($users, MYSQL_BOTH)) {
 		
 		
 		// Chance of attacking here: *0.0075 6000pts+ = 45% chance (1000pts = 8% chance, rounded).
-		$chance = $villagepoints*0.0075;
+		// New calc = *0.0030 6000pts+ = 18% chance (1000pts = 3% chance, rounded).
+		$chance = $villagepoints*0.0030;
 		
 
 	//echo '<br>'.$id.' '.$username.' | Points: '.$points.' | Chance of attack: '.$chance.' | Axes: '.$axes.' | Spears: '.$spears.' | Swords: '.$swords.' | Spies: '.$spy.' | LC: '.$lightcav.' | Troops total: '.$troopcount.'<br>'  ;
 	
 	$randomchance = rand(1, 100);
+	if ($id > 1) {
 	echo 'Village name: '.$villagename.'<br>';
 	echo 'Chance check: '.$chance.'<br>';
 	echo 'Rolled      : '.$randomchance.'<br>';
 	echo 'Unit count  : '.$troopcount.'<br>';
 	
 	
-	//increased this to 1000000 from 100
-	$rand_movementid = rand(1, 1000000);
-	$rand_eventid = rand(1, 1000000);
-	
-	
-	//THIS SOLVES THE ATTACK SELF ISSUE
+		//THIS SOLVES THE ATTACK SELF ISSUE
 	//IT CHECKS FOR villages that are not the users/attackers villages
 	//$rand_enemy = rand(1,$maximumVillageID);
 	//$rand_enemy = rand(1,$maximumID);
@@ -123,18 +118,27 @@ while ($row = mysql_fetch_array($users, MYSQL_BOTH)) {
 	$rand_enemy = $row['id'];
 	echo 'Random enemy village: '.$rand_enemy.'<br>';
 	echo '______________________________________________________<br>';
+	}
+	
+	//increased this to 1000000 from 100
+	$rand_movementid = rand(1, 1000000);
+	$rand_eventid = rand(1, 1000000);
+	
+	
+
 }
 
 
 
 	//Check each player for chance to attack, attack if true ($id > 1 stops player1's account sending attacks)
-	if($randomchance <= $chance AND $troopcount > 300 AND $id > 0 AND $villagepoints > 300 AND empty($rand_enemy)==0){
+	//Raised troopcount in if to 700 from 300
+	if($randomchance <= $chance AND $troopcount > 700 AND $id > 1 AND $villagepoints > 300 AND empty($rand_enemy)==0){
 		
 		echo '<b><p style="color:red">'.$username.' attacks village ID: '.$rand_enemy.'</p></b>';
 		echo '______________________________________________________<br>';
 		
 		//Random movement time
-		$randomMovementTime = rand(21, 41);
+		$randomMovementTime = rand(450, 540);
 		
 		//Send the movement - TO DO - need to change the to village to the enemy or target village variable (need to create) 
 		$movement = mysql_query("INSERT INTO  `movements` (  `id` ,  `from_village` ,  `to_village` ,  `units` ,  `type` ,  `start_time` ,  `end_time` ,  `building` ,                                       `from_userid` ,  `to_userid` ,  `to_hidden` ,  `wood` ,  `stone` ,  `iron` ,  `send_from_village` ,  `send_from_user` ,  `send_to_user` ,  `send_to_village` ,  `die` ) 
