@@ -4,7 +4,7 @@ ________________________________________________________________________________
 
 Disclaimer: I did not create TW LAN, that can be found here: https://twlan.github.io/
             This should only be played in an offline capacity do not attempt to 
-            host this and play this with 
+            host this and play this online. 
             
             I assume no responsibility or liability for any errors or omissions 
             in the content of TW LAN or this bot. The information contained within 
