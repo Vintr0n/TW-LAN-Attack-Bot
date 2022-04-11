@@ -59,14 +59,6 @@ while ($row = mysql_fetch_array($users, MYSQL_BOTH)) {
 	$points = $row['points'];
 
 	
-if ($points < 79){
-	// THIS removes players that have 0 points
-		$users = mysql_query("DELETE FROM `users` WHERE points < 79 ");
-		$users = mysql_query("DELETE FROM `villages` WHERE points < 79 ");
-		echo '______________________________________________________<br>';
-		echo '<b><p style="color:red">'.$username.' HAS BEEN DEFEATED</p></b>';
-		echo '______________________________________________________<br>';
-	}
 
 	
 	
@@ -103,6 +95,7 @@ if ($points < 79){
 	
 	$randomchance = rand(1, 100);
 	if ($id > 1) {
+	echo 'Username: '.$username.'<br>';
 	echo 'Village name: '.$villagename.'<br>';
 	echo 'Chance check: '.$chance.'<br>';
 	echo 'Rolled      : '.$randomchance.'<br>';
@@ -113,16 +106,26 @@ if ($points < 79){
 	//IT CHECKS FOR villages that are not the users/attackers villages
 	//$rand_enemy = rand(1,$maximumVillageID);
 	//$rand_enemy = rand(1,$maximumID);
-	$rand_enemy_query = mysql_query("SELECT * FROM villages WHERE userid <> '$id' ORDER BY RAND() LIMIT 1");
+	//$rand_enemy_query = mysql_query("SELECT * FROM villages WHERE userid <> '$id' ORDER BY RAND() LIMIT 1");
+	
+	//Instead of random this looks to the nearest village
+//$rand_enemy_query = mysql_query("SELECT * from villages WHERE id <> '$id' OR userid <> '$id' order by abs(id - '$id') limit 1;");
+$rand_enemy_query = mysql_query("SELECT * from VILLAGES WHERE id NOT IN (SELECT id FROM VILLAGES WHERE userid = '$id') order by abs(id - '$id') limit 1;");
+
+
+
+
+
 	while ($row = mysql_fetch_array($rand_enemy_query, MYSQL_BOTH)) {
 	$rand_enemy = $row['id'];
-	echo 'Random enemy village: '.$rand_enemy.'<br>';
+	echo 'Players village ID: '.$id.'<br>';
+	//echo 'Calculated Enemy village ID: '.$rand_enemy_query.'<br>';
 	echo '______________________________________________________<br>';
 	}
 	
 	//increased this to 1000000 from 100
-	$rand_movementid = rand(1, 1000000);
-	$rand_eventid = rand(1, 1000000);
+	$rand_movementid = rand(1, 10000000);
+	$rand_eventid = rand(1, 10000000);
 	
 	
 
@@ -131,14 +134,16 @@ if ($points < 79){
 
 
 	//Check each player for chance to attack, attack if true ($id > 1 stops player1's account sending attacks)
-	//Raised troopcount in if to 700 from 300
-	if($randomchance <= $chance AND $troopcount > 700 AND $id > 1 AND $villagepoints > 300 AND empty($rand_enemy)==0){
+	//Raised troopcount in if to 700 from 300, then from 700 to 1000
+	if($randomchance <= $chance AND $troopcount > 1000 AND $id > 1 AND $villagepoints > 300 AND empty($rand_enemy)==0){
 		
 		echo '<b><p style="color:red">'.$username.' attacks village ID: '.$rand_enemy.'</p></b>';
 		echo '______________________________________________________<br>';
 		
-		//Random movement time
-		$randomMovementTime = rand(450, 540);
+		//Random movement time (7.5mins to 9 mins)
+		//$randomMovementTime = rand(450, 540);
+		$randomMovementTime = rand(120, 300);
+		
 		
 		//Send the movement - TO DO - need to change the to village to the enemy or target village variable (need to create) 
 		$movement = mysql_query("INSERT INTO  `movements` (  `id` ,  `from_village` ,  `to_village` ,  `units` ,  `type` ,  `start_time` ,  `end_time` ,  `building` ,                                       `from_userid` ,  `to_userid` ,  `to_hidden` ,  `wood` ,  `stone` ,  `iron` ,  `send_from_village` ,  `send_from_user` ,  `send_to_user` ,  `send_to_village` ,  `die` ) 
