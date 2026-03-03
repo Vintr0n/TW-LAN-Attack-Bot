@@ -4,6 +4,8 @@ After all these years I fancied playing Tribal Wars in an offline capacity and r
 
 Tribal Wars LAN NPC Controller — simulates fully autonomous AI villages that build, research, recruit, attack, and support each other.
 
+<img src="screenie.png" alt="Superbot Dashboard" width="800">
+
 ---
 
 > **Disclaimer:** I did not create TW LAN. The original project can be found at https://twlan.github.io/  
